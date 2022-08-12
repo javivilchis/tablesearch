@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+     <meta charset="UTF-8">
+     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+     <meta name="viewport" content="width=device-width, initial-scale=1">
+     <title>Document</title>
+     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
+     <style>.footerfix{z-index: 4;}</style>
+</head>
+<body>
+
+     <!-- 
+          in the contoller create a function that lets you load one page at a time.
+          so that you can request chunks at a time instead of everything all at once.
+          break down PageNumber by LIMIT and OFFSET
+          --
+          in the contoller, create a class that returns the one id from the searchbar.
+
+     -->
+     <div class="container">
+          <div class="row">
+               <div class="col-12">
+                    <h1>Filtering data using jquery</h1>
+                    <p class="text-danger">
+                    <span class="visually-hidden">Sample: </span>
+                    This is a sample of a filtered table using jquery
+                    </p>
+               </div>
+          </div>
+          <div class="row">
+               <div class="col-12">
+                    <div class="input-group mb-3">
+                         <span class="input-group-text" id="searchId">
+                              <i class="bi-search" style="font-size: 1rem; color: blueblack;"></i>
+                         </span>
+                         <input type="number" id="searchId" name="searchId" class="form-control" placeholder="Search by ID number" aria-label="Search" aria-describedby="searchId" required>
+                         
+                    </div>
+               </div>
+               <div class="col-12 py-4">
+                    <div class="bd-example">
+                         <table id="postsTable" class="table table-light table-hover">
+                             <thead>
+                           <tr>
+                             <th scope="col">User ID</th>
+                             <th scope="col">ID</th>
+                             <th scope="col">Title</th>
+                             <th scope="col">Content</th>
+                           </tr>
+                         </thead>
+                         <tbody>
+                           <tr>
+                             <th scope="row">1</th>
+                             <td>32</td>
+                             <td>Honoring the time</td>
+                             <td>Lorem ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis explicabo esse sint facere voluptatum, excepturi, voluptate aperiam cumque dolorem harum doloremque aut ipsam praesentium dolore quia rerum dolor tempore nam!</td>
+                           </tr>
+                           <tr>
+                              <th scope="row">1</th>
+                              <td>33</td>
+                              <td>Honoring the time</td>
+                              <td>Lorem ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis explicabo esse sint facere voluptatum, excepturi, voluptate aperiam cumque dolorem harum doloremque aut ipsam praesentium dolore quia rerum dolor tempore nam!</td>
+                            </tr>
+                            <tr>
+                              <th scope="row">1</th>
+                              <td>34</td>
+                              <td>Honoring the time</td>
+                              <td>Lorem ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis explicabo esse sint facere voluptatum, excepturi, voluptate aperiam cumque dolorem harum doloremque aut ipsam praesentium dolore quia rerum dolor tempore nam!</td>
+                            </tr>
+                         </tbody>
+                       
+                         </table>
+                       </div>
+               </div>
+          </div>
+     </div>
+     <footer class="fixed-bottom footerfix shadow bg-light">
+          <div class="container">
+               <div class="row">
+                    <div class="col-12 py-4 text-muted">www.javivilchis.com</div>
+               </div>
+          </div>
+     </footer>
+
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"></script>
+
+     <script>
+          $(document).ready(function(){
+               // load all the posts from api
+               loadPosts();
+               // declare a variable for the table body contents
+               const postBody = $("#postsTable tbody").contents();
+
+               // filter the posts from the table by ID
+               $("input[name=searchId]").on("keyup", function(){
+                    var searchId = $("input[name=searchId]").val();
+                    if(searchId  === ''){
+                        return;
+                    }
+                    // filter table data to show the row that matches the search id
+                    $("#postsTable tr").filter( function(){
+                         $(this).toggle($(this).text().toLocaleLowerCase().indexOf(searchId) > -1);
+                    })
+               });
+
+               // load all of the posts from the api
+               function loadPosts(){
+                    // remove the current set of entries in the table if the api returns items
+                    if($("#postsTable > tbody.NA")){
+                         $("#postsTable > tbody> tr").remove();
+                    }
+                    // make the call to the api to get the json object and construct the table entries 
+                    $.ajax({
+                         method: "GET",
+                         url: "https://jsonplaceholder.typicode.com/posts/"
+                    })
+                    .done(function( response ) {
+                        //console.log(response);
+                       $.each(response, function(key, value){
+                         var newset = 
+                              '<tr>' +
+                              '<th scope="row">' + value.userId + '</td>' +
+                              '<td>' + value.id + '</td>' +
+                              '<td>' + value.title + '</td>' +
+                              '<td>' + value.body + '</td>';
+                              // append the set of values to the table
+                              $("#postsTable > tbody").append(newset);
+
+                       });
+                    });
+               }
+
+              
+          });
+     </script>
+</body>
+</html>
